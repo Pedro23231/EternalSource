@@ -1,0 +1,659 @@
+if game.PlaceId == 3956818381 then
+    
+    local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+    local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
+    local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
+
+    local Window = Fluent:CreateWindow({
+        Title = "Projeto X",
+        SubTitle = "by Pedro2",
+        TabWidth = 160,
+        Size = UDim2.fromOffset(580, 460),
+        Acrylic = true,
+        Theme = "Darker",
+        MinimizeKey = Enum.KeyCode.LeftControl
+    })
+
+    
+    local Tabs = {
+        Info = Window:AddTab({ Title = "Info", Icon = "info" }),
+        AutoFarm = Window:AddTab({ Title = "Autofarm", Icon = "home" }),
+        Boss = Window:AddTab({ Title = "Auto boss [ IN BETA ]", Icon = "sword" }),
+        Pets = Window:AddTab({ Title = "Pets", Icon = "dog" }),
+        Teleport = Window:AddTab({ Title = "Teleporting", Icon = "compass" }),
+        Player = Window:AddTab({ Title = "Player", Icon = "user" }),
+        Misc = Window:AddTab({ Title = "Misc", Icon = "wrench" }),
+    }
+
+    ----------------------- Info 
+
+    
+
+    local InfoSection = Tabs.Info:AddSection("Infos:")
+
+    Tabs.Info:AddParagraph({
+        Title = "Projeto X (INFOS)",
+        Content = "I recommend going to Misc and clicking on Unlock all elements for better farming"
+    })
+
+    local InfoSection2 = Tabs.Info:AddSection("Server Discord:")
+
+    Tabs.Info:AddButton({
+        Title = "Copy server discord",
+        Description = "",
+        Callback = function()
+            local function copyToClipboard()
+                local texto = "https://discord.gg/exclient"
+                setclipboard(texto)
+
+                Fluent:Notify({
+                    Title = "Notify!",
+                    Content = "Server Copied!",
+                    SubContent = "", 
+                    Duration = 5 
+                })
+            end
+            
+            copyToClipboard()
+        end
+    })
+
+    Tabs.Info:AddParagraph({
+        Title = "This was created by Pedro2.",
+        Content = "Version 1.0"
+    })
+
+
+    ----------------------- auto farm
+
+    Tabs.AutoFarm:AddToggle("Auto swing", {
+        Title = "Auto swing",
+        Default = false,
+        Description = "",
+        Callback = function(value)
+            getgenv().autoswing = value
+            while true do
+                if not getgenv().autoswing then return end
+                for _, tool in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+                    if tool:FindFirstChild("ninjitsuGain") then
+                        game.Players.LocalPlayer.Character.Humanoid:EquipTool(tool)
+                        break
+                    end
+                end
+                local A_1 = "swingKatana"
+                game:GetService("Players").LocalPlayer.ninjaEvent:FireServer(A_1)
+                wait()
+            end
+        end
+    })
+
+    Tabs.AutoFarm:AddToggle("Auto sell", {
+        Title = "Auto sell (35x)",
+        Default = false,
+        Description = "",
+        Callback = function(value)
+            getgenv().autosell = value
+            while true do
+                if not getgenv().autosell then return end
+                game:GetService("Workspace").sellAreaCircles["sellAreaCircle16"].circleInner.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+                wait(0.1)
+                game:GetService("Workspace").sellAreaCircles["sellAreaCircle16"].circleInner.CFrame = CFrame.new(0,0,0)
+                wait(0.1)
+            end
+        end
+    })
+
+    Tabs.AutoFarm:AddToggle("Auto buy sword", {
+        Title = "Auto buy sword",
+        Default = false,
+        Description = "",
+        Callback = function(value)
+            getgenv().autobuy = value
+            while true do
+                if not getgenv().autobuy then return end
+                local A_1 = "buyAllSwords"
+                local A_2 = "Inner Peace Island"
+                local Event = game:GetService("Players").LocalPlayer.ninjaEvent
+                Event:FireServer(A_1, A_2)
+                wait(0.5)
+            end
+        end
+    })
+
+    Tabs.AutoFarm:AddToggle("Auto buy belts", {
+        Title = "Auto buy belts",
+        Default = false,
+        Description = "",
+        Callback = function(value)
+            getgenv().autobuybelts = value
+            while true do
+                if not getgenv().autobuybelts then return end
+                local A_1 = "buyAllBelts"
+                local A_2 = "Inner Peace Island"
+                local Event = game:GetService("Players").LocalPlayer.ninjaEvent
+                Event:FireServer(A_1, A_2)
+                wait(0.5)
+            end
+        end
+    })  
+    
+    Tabs.AutoFarm:AddToggle("Auto buy skills", {
+        Title = "Auto buy skills",
+        Default = false,
+        Description = "",
+        Callback = function(value)
+            getgenv().autobuyskills = value
+            while true do
+                if not getgenv().autobuyskills then return end
+                local A_1 = "buyAllSkills"
+                local A_2 = "Inner Peace Island"
+                local Event = game:GetService("Players").LocalPlayer.ninjaEvent
+                Event:FireServer(A_1, A_2)
+                wait(0.5)
+            end
+        end
+    })
+
+    local ranks = {}
+    for i,v in pairs(game:GetService("ReplicatedStorage").Ranks.Ground:GetChildren()) do
+       table.insert(ranks,v.Name)
+    end
+
+    Tabs.AutoFarm:AddToggle("Auto rank", {
+        Title = "Auto rank",
+        Default = false,
+        Description = "",
+        Callback = function(value)
+            getgenv().autobuyranks = value
+            while true do
+                if not getgenv().autobuyranks then return end
+                local deku1 = "buyRank"
+                for i = 1, #ranks do
+                    game:GetService("Players").LocalPlayer.ninjaEvent:FireServer(deku1, ranks[i])
+                end
+                wait(0.1)
+            end
+        end
+    })
+
+    local extraSection = Tabs.AutoFarm:AddSection("Extra: ")
+
+    Tabs.AutoFarm:AddToggle("Auto farm hoops", {
+        Title = "Auto farm hoops (xp)",
+        Default = false,
+        Description = "",
+        Callback = function(value)
+            if value then  -- Verifica se o toggle está ativado
+                for _, v in pairs(game:GetService("Workspace").Hoops:GetChildren()) do
+                    if v:IsA("MeshPart") then
+                        v.touchPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+                        wait(0.25)
+                        v.touchPart.CFrame = CFrame.new(0, 0, 0)
+                    end
+                end
+            end
+        end
+    })
+
+    ----------------------- auto farm boss
+
+    local currentBoss = nil
+    local isTeleporting = false  
+
+    Tabs.Boss:AddDropdown("BossDropdown", {
+        Title = "Select a Boss",
+        Values = {"AncientMagmaBoss", "EternalBoss", "RobotBoss"},
+        Default = "AncientMagmaBoss",  
+        Callback = function(selectedBoss)
+            print("Selected Boss:", selectedBoss)  
+            
+            if currentBoss ~= selectedBoss then
+                currentBoss = selectedBoss
+                TeleportToBoss(currentBoss)  
+            end
+        end
+    })
+
+    Tabs.Boss:AddToggle("", {
+        Title = "Auto farm boss",
+        Default = false,
+        Description = "",
+        Callback = function(value)
+            isTeleporting = value  -- Atualiza o estado do teletransporte
+            if isTeleporting then
+                TeleportToBoss(currentBoss)  -- Inicia o teletransporte se o toggle estiver ativado
+            end
+    
+            getgenv().autoswing = value
+            while getgenv().autoswing do  -- Usa o valor de autoswing diretamente como condição
+                for _, tool in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+                    if tool:FindFirstChild("ninjitsuGain") then
+                        game.Players.LocalPlayer.Character.Humanoid:EquipTool(tool)
+                        break
+                    end
+                end
+                local A_1 = "swingKatana"
+                game:GetService("Players").LocalPlayer.ninjaEvent:FireServer(A_1)
+                wait()
+            end
+        end
+    })
+    
+    --[[ function TeleportToBoss(bossName)
+        while isTeleporting do  -- Verifica se o teletransporte está ativado
+            if not game.Players.LocalPlayer.Character or not game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") then
+                break
+            end
+            
+            -- Move o personagem em direção ao UpperTorso do boss
+            local boss = game.Workspace:FindFirstChild(bossName)
+            if boss and boss:FindFirstChild("UpperTorso") then
+                local upperTorso = boss.UpperTorso
+                
+                -- Verifica se o boss está vivo
+                if boss:FindFirstChild("Humanoid") and boss.Humanoid.Health > 0 then
+                    -- Equipar a espada
+                    for _, tool in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+                        if tool:FindFirstChild("ninjitsuGain") then
+                            game.Players.LocalPlayer.Character.Humanoid:EquipTool(tool)
+                            break
+                        end
+                    end
+                    
+                    -- Cria uma plataforma acima do UpperTorso
+                    local platform = Instance.new("Part")
+                    platform.Size = Vector3.new(5, 1, 5)  -- Tamanho da plataforma
+                    platform.Position = upperTorso.Position + Vector3.new(0, 5, 0)  -- Posição acima do boss
+                    platform.Anchored = true
+                    platform.Parent = game.Workspace
+                    
+                    -- Move o personagem para a plataforma
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = platform.CFrame * CFrame.new(0, 5, 0)  -- Ajusta a altura
+                    
+                    -- Fica em cima da plataforma até o boss morrer
+                    while isTeleporting and boss.Humanoid.Health > 0 do
+                        wait(1)  -- Aguarda um segundo antes de verificar novamente
+                    end
+                    
+                    -- Remove a plataforma após o boss morrer
+                    platform:Destroy()
+                end
+            end
+            
+            wait(1)  -- Aguarda um segundo antes de verificar se o boss morreu
+    
+            -- Verifica se o boss está morto
+            if boss and boss:FindFirstChild("Humanoid") and boss.Humanoid.Health <= 0 then
+                break  -- Sai do loop se o boss estiver morto
+            end
+        end
+    
+        -- Teleporta para o próximo boss após a morte
+        if currentBoss == "AncientMagmaBoss" then
+            currentBoss = "EternalBoss"
+        elseif currentBoss == "EternalBoss" then
+            currentBoss = "RobotBoss"
+        elseif currentBoss == "RobotBoss" then
+            currentBoss = "AncientMagmaBoss"
+        end
+    
+        
+        if isTeleporting then
+            TeleportToBoss(currentBoss)  
+        end
+    end ]]
+
+    -------------------------- pets
+
+    local CrystalsList = {}  
+
+    
+    for _, v in pairs(game:GetService("Workspace").mapCrystalsFolder:GetChildren()) do
+        table.insert(CrystalsList, v.Name)
+    end
+    
+    
+    table.sort(CrystalsList, function(a, b)
+        local crystalA = game:GetService("ReplicatedStorage").crystalPrices:FindFirstChild(a)
+        local crystalB = game:GetService("ReplicatedStorage").crystalPrices:FindFirstChild(b)
+    
+        if crystalA and crystalB then
+            return crystalA.price.Value < crystalB.price.Value
+        end
+        return false 
+    end)
+    
+    
+    local Selected = nil
+    local PriceLabel = nil  
+    
+    
+    local function UpdatePrice()
+        if Selected then
+            local PriceData = game:GetService("ReplicatedStorage").crystalPrices:FindFirstChild(Selected)
+            if PriceData then
+                local Price = PriceData.price.Value
+                local PriceType = PriceData.priceType.Value
+                PriceLabel:Set("Crystal Price: " .. tostring(Price) .. " " .. tostring(PriceType))
+            end
+        end
+    end
+    
+    Tabs.Pets:AddDropdown("CrystalDropdown", {
+        Title = "Select a Crystal",
+        Values = CrystalsList,  
+        Default = CrystalsList[1] or "",
+        Callback = function(t)
+            pcall(function()
+                Selected = t
+                UpdatePrice()  
+                
+                
+                local crystalPart = game:GetService("Workspace").mapCrystalsFolder:FindFirstChild(Selected)
+                if crystalPart then
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = crystalPart.CFrame
+                end
+                
+                print("Selected crystal:", Selected)
+            end)
+        end
+    })
+    
+    
+    Tabs.Pets:AddButton({
+        Title = "Open one crystal",
+        Description = "",
+        Callback = function()
+            if not Selected then
+                return
+            end
+            local Event = game:GetService("ReplicatedStorage").rEvents:FindFirstChild("openCrystalRemote")
+            if Event then
+                Event:InvokeServer("openCrystal", Selected)
+                
+                -- Inicia a abertura automática do cristal
+                getgenv().autoopencrystals = true
+                task.spawn(function()
+                    while getgenv().autoopencrystals do
+                        local Event = game:GetService("ReplicatedStorage").rEvents:FindFirstChild("openCrystalRemote")
+                        if Event then
+                            Event:InvokeServer("openCrystal", Selected)
+                        end
+                        wait(0.5)  
+                    end
+                end)
+            end
+        end
+    })
+    
+    -- Toggle para auto abrir cristais
+    Tabs.Pets:AddToggle("AutoOpenCrystals", {
+        Title = "Auto open crystals",
+        Default = false,
+        Description = "",
+        Callback = function(Value)
+            getgenv().autoopencrystals = Value
+            if Value then
+                task.spawn(function()
+                    while getgenv().autoopencrystals do
+                        if not Selected then
+                            
+                            return
+                        end
+                        local Event = game:GetService("ReplicatedStorage").rEvents:FindFirstChild("openCrystalRemote")
+                        if Event then
+                            Event:InvokeServer("openCrystal", Selected)
+                        end
+                        wait(0.5) 
+                    end
+                end)
+            end
+        end
+    })
+    
+
+    -------------------------- teleport
+
+    
+    local Islandslist = {
+        "Enchanted Island", "Astral Island", "Mystical Island", "Space Island", "Tundra Island", 
+        "Eternal Island", "Sandstorm", "Thunderstorm", "Ancient Inferno Island", 
+        "Midnight Shadow Island", "Mythical Souls Island", "Winter Wonder Island", 
+        "Golden Master Island", "Dragon Legend Island", "Cybernetic Legends Island", 
+        "Skystorm Ultraus Island", "Chaos Legends Island", "Soul Fusion Island", 
+        "Dark Elements Island", "Inner Peace Island", "Blazing Vortex Island"
+    }
+    
+    Tabs.Teleport:AddDropdown("IslandDropdown", {
+        Title = "Select an Island",
+        Values = Islandslist,
+        Default = Islandslist[1] or "",
+        Callback = function(selectedIsland)
+            pcall(function()
+                local islandPart = game:GetService("Workspace").islandUnlockParts[selectedIsland]
+                if islandPart then
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = islandPart.CFrame
+                else
+                    warn("error " .. tostring(selectedIsland))
+                end
+            end)
+        end
+    })
+
+    local TrainingList = {
+        "Mystical Waters", "Lava Pit", "Tornado", "Sword of Legends",
+        "Sword of Ancients", "Elemental Tornado", "Fallen Infinity Blade", "Zen Master's Blade"
+    }
+    
+    Tabs.Teleport:AddDropdown("TrainingDropdown", {
+        Title = "Select a Training Area",
+        Values = TrainingList,
+        Default = TrainingList[1] or "",
+        Callback = function(selectedTraining)
+            TeleportToTrainingArea(selectedTraining)
+        end
+    })
+    
+    function TeleportToTrainingArea(selectedTraining)
+        if not selectedTraining then
+            selectedTraining = Tabs.Teleport:GetDropdown("TrainingDropdown").Value
+        end
+    
+        if not selectedTraining or selectedTraining == "" then
+            warn("No training area selected.")
+            return
+        end
+    
+        local trainingAreaParts = game:GetService("Workspace"):FindFirstChild("trainingAreaParts")
+        if not trainingAreaParts then
+            warn("'trainingAreaParts' folder not found in Workspace.")
+            return
+        end
+    
+        local trainingPart = trainingAreaParts:FindFirstChild(selectedTraining)
+        if trainingPart then
+            local player = game.Players.LocalPlayer
+            if player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                player.Character.HumanoidRootPart.CFrame = trainingPart.CFrame
+            else
+                warn("Player character is not loaded correctly.")
+            end
+        else
+            warn("Training area not found: " .. tostring(selectedTraining))
+        end
+    end    
+
+    local tpSection = Tabs.Teleport:AddSection("Extra: ")
+
+    Tabs.Teleport:AddButton({
+        Title = "Unlock all islands",
+        Description = "",
+        Callback = function()
+            UnlockAllIslands()
+        end
+    })
+
+    function UnlockAllIslands()
+        local Islandslist = {
+            "Enchanted Island", "Astral Island", "Mystical Island", "Space Island", "Tundra Island", "Eternal Island", "Sandstorm", "Thunderstorm", "Ancient Inferno Island", "Midnight Shadow Island", "Mythical Souls Island", "Winter Wonder Island", "Golden Master Island", "Dragon Legend Island", "Cybernetic Legends Island", "Skystorm Ultraus Island", "Chaos Legends Island", "Soul Fusion Island", "Dark Elements Island", "Inner Peace Island", "Blazing Vortex Island"
+        }
+        for _, island in ipairs(Islandslist) do
+            pcall(function()
+                local islandPart = game:GetService("Workspace").islandUnlockParts[island]
+                if islandPart then
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = islandPart.CFrame
+                else
+                    warn(" " .. tostring(island))
+                end
+            end)
+        end
+
+        for _,v in pairs(game:GetService("Workspace").islandUnlockParts:GetChildren()) do
+            firetouchinterest(game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart"),v,0)
+            firetouchinterest(game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart"),v,1)
+        end
+    end
+
+    -------------------------- player
+
+    local modifierSection = Tabs.Player:AddSection("Player: ")
+
+    Tabs.Player:AddSlider("Speed", {
+        Title = "Walkspeed",
+        Description = "",
+        Default = 16,
+        Min = 10,
+        Max = 100,
+        Rounding = 1,
+        Callback = function(value)
+            game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = value
+        end
+    })
+
+    Tabs.Player:AddSlider("JumpPower", {
+        Title = "Jump Power",
+        Description = "",
+        Default = 50,
+        Min = 20,
+        Max = 200,
+        Rounding = 1,
+        Callback = function(value)
+            game.Players.LocalPlayer.Character.Humanoid.JumpPower = value
+        end
+    })
+    
+
+    Tabs.Player:AddButton({
+        Title = "Infinite Jump",
+        Description = "",
+        Callback = function()
+            game.Players.LocalPlayer.multiJumpCount.Value = 999999999
+        end
+    })
+
+    local KillSection = Tabs.Player:AddSection("Auto kill Player:")
+
+    Tabs.Player:AddToggle("Teleport to Players", {
+        Title = "Kill players [ IN BETA ]",
+        Default = false,
+        Description = "",
+        Callback = function(Value)
+          --[[   if Value then
+                local players = game.Players:GetPlayers()
+                local index = 1
+
+                while Value do
+                    if #players > 0 then
+                        local player = players[index]
+                        if player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                            -- Teleport instantâneo para o primeiro jogador
+                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = player.Character.HumanoidRootPart.CFrame
+                            
+                            -- Verifica se o jogador está morto
+                            player.Character:WaitForChild("Humanoid").Died:Wait()
+                         -- Teleporta para o próximo jogador
+                            index = index + 1
+                            if index > #players then
+                                index = 1
+                            end
+                        end
+                    end
+                    wait(10)  
+                end
+            end ]]--
+        end
+    })
+    
+    -------------------------- misc
+
+    local miscSection = Tabs.Misc:AddSection("Extra: ")
+
+    Tabs.Misc:AddButton({
+        Title = "Unlock all elements",
+        Description = "",
+        Callback = function()
+            local Elements = {}
+            for i,v in pairs(game:GetService("ReplicatedStorage").Elements:GetChildren()) do
+                table.insert(Elements,v.Name)
+            end
+
+            for i,v in pairs(Elements) do
+                game.ReplicatedStorage.rEvents.elementMasteryEvent:FireServer(v)
+                print(v)
+            end
+        end
+    })
+
+    Tabs.Misc:AddButton({
+        Title = "Open all chests",
+        Description = "",
+        Callback = function()
+            for i = 1, #Workspace:GetChildren() do
+                local v = Workspace:GetChildren()[i]
+                if v:FindFirstChild("Chest") and v:FindFirstChild("circleInner") and v.circleInner:FindFirstChildWhichIsA("TouchTransmitter") then
+                    local Transmitter = v.circleInner:FindFirstChildWhichIsA("TouchTransmitter")
+                    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, Transmitter.Parent, 0)
+                    task.wait()
+                    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, Transmitter.Parent, 1)
+                    wait(5)
+                end
+            end
+        end
+    })
+
+
+    Tabs.Misc:AddButton({
+        Title = "Remove pop us/add",
+        Description = "",
+        Callback = function()
+            if game:GetService("Players").LocalPlayer.PlayerGui.statEffectsGui.Enabled == false then
+                game:GetService("Players").LocalPlayer.PlayerGui.statEffectsGui.Enabled = true
+                game:GetService("Players").LocalPlayer.PlayerGui.hoopGui.Enabled = true
+            else
+                game:GetService("Players").LocalPlayer.PlayerGui.statEffectsGui.Enabled = false
+                game:GetService("Players").LocalPlayer.PlayerGui.hoopGui.Enabled = false
+            end
+        end
+    })
+
+    Tabs.Misc:AddButton({
+        Title = "Rejoin Game",
+        Description = "",
+        Callback = function()
+            local player = game.Players.LocalPlayer
+            local teleportService = game:GetService("TeleportService")
+            teleportService:Teleport(game.PlaceId, player)  -- Teleporta o jogador de volta ao jogo
+        end
+    })
+
+    Tabs.Misc:AddButton({
+        Title = "Open Shop ",
+        Description = "",
+        Callback = function()
+            game:GetService("Workspace").shopAreaCircles.shopAreaCircle19.circleInner.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+            wait(0.4)
+            game:GetService("Workspace").shopAreaCircles.shopAreaCircle19.circleInner.CFrame = CFrame.new(0, 0, 0)
+        end
+    })
+
+end
